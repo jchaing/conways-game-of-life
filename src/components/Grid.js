@@ -25,7 +25,7 @@ const Grid = () => {
             key={`${x}-${y}`}
             style={{ width: 20, height: 20, border: '1px solid black' }}
           >
-            {col}
+            {/* {col} */}
           </div>
         ))
       )}
