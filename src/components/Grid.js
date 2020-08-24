@@ -1,0 +1,124 @@
+import React, { useState, useRef, useCallback } from 'react';
+import produce from 'immer';
+
+const row = 50;
+const column = 50;
+const val = 0;
+
+const buildGrid = (row, column, val) =>
+  new Array(row).fill(null).map((v) => new Array(column).fill(val));
+
+const grid50 = buildGrid(row, column, val);
+
+const neighborCells = [
+  [0, 1],
+  [1, 0],
+  [0, -1],
+  [-1, 0],
+  [1, 1],
+  [-1, -1],
+  [-1, 1],
+  [1, -1],
+];
+
+const Grid = () => {
+  const [grid, setGrid] = useState(grid50);
+  const [start, setStart] = useState(false);
+
+  const startRef = useRef(start);
+  startRef.current = start;
+
+  const run = useCallback(() => {
+    if (!startRef.current) {
+      return;
+    }
+
+    setGrid((grid) => {
+      return produce(grid, (newGrid) => {
+        for (let x = 0; x < row; x++) {
+          for (let y = 0; y < column; y++) {
+            let neighbors = 0;
+            neighborCells.forEach(([i, j]) => {
+              const newX = x + i;
+              const newY = y + j;
+              if (newX >= 0 && newX < row && newY >= 0 && newY < column) {
+                neighbors += grid[newX][newY];
+              }
+            });
+
+            // Rules for Alive or Dead Cells
+            if (neighbors < 2 || neighbors > 3) {
+              newGrid[x][y] = 0;
+            } else if (grid[x][y] === 0 && neighbors === 3) {
+              newGrid[x][y] = 1;
+            }
+          }
+        }
+      });
+    });
+    setTimeout(run, 200);
+  }, []);
+
+  return (
+    <>
+      <button
+        onClick={() => {
+          setStart(!start);
+          startRef.current = true;
+          console.log(start);
+          run();
+        }}
+      >
+        {start ? 'Stop' : 'Start'}
+      </button>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          console.log(start);
+          setGrid(grid50)
+        }}
+      >
+        Clear
+      </button>
+      <button onClick={() => {
+        setStart(false);
+        startRef.current = false;
+        setGrid(grid50)
+      }}>
+        Mirror
+      </button>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${column}, 10px)`,
+        }}
+      >
+        {grid.map((rows, x) =>
+          rows.map((col, y) => (
+            <div
+              onClick={() => {
+                console.log(`$x: ${x}, y: ${y} Alive: ${grid[x][y]}`);
+                const gridClick = produce(grid, (newGrid) => {
+                  newGrid[x][y] = newGrid[x][y] ? 0 : 1;
+                });
+                setGrid(gridClick);
+              }}
+              key={`${x}-${y}`}
+              style={{
+                width: 10,
+                height: 10,
+                border: '1px solid black',
+                background: grid[x][y] ? 'black' : 'white',
+              }}
+            >
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  );
+};
+
+export default Grid;
