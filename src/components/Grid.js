@@ -1,14 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
 import produce from 'immer';
+import { buildGrid, grid50, mirror, gliderGun } from '../presets/gridPresets'
 
 const row = 50;
 const column = 50;
-const val = 0;
-
-const buildGrid = (row, column, val) =>
-  new Array(row).fill(null).map((v) => new Array(column).fill(val));
-
-const grid50 = buildGrid(row, column, val);
 
 const neighborCells = [
   [0, 1],
@@ -56,7 +51,7 @@ const Grid = () => {
         }
       });
     });
-    setTimeout(run, 200);
+    setTimeout(run, 10);
   }, []);
 
   return (
@@ -84,9 +79,16 @@ const Grid = () => {
       <button onClick={() => {
         setStart(false);
         startRef.current = false;
-        setGrid(grid50)
+        setGrid(mirror)
       }}>
         Mirror
+      </button>
+      <button onClick={() => {
+        setStart(false);
+        startRef.current = false;
+        setGrid(gliderGun)
+      }}>
+        Gosper Glider Gun
       </button>
 
       <div
