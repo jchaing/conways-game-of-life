@@ -1,9 +1,10 @@
 import React, { useState, useRef, useCallback } from 'react';
 import produce from 'immer';
-import { buildGrid, grid50, mirror, gliderGun } from '../presets/gridPresets'
+import { buildGrid, grid50, mirror, gliderGun } from '../presets/gridPresets';
 
 const row = 50;
 const column = 50;
+const val = 0;
 
 const neighborCells = [
   [0, 1],
@@ -71,24 +72,42 @@ const Grid = () => {
           setStart(false);
           startRef.current = false;
           console.log(start);
-          setGrid(grid50)
+          setGrid(grid50);
         }}
       >
         Clear
       </button>
-      <button onClick={() => {
-        setStart(false);
-        startRef.current = false;
-        setGrid(mirror)
-      }}>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          setGrid(mirror);
+        }}
+      >
         Mirror
       </button>
-      <button onClick={() => {
-        setStart(false);
-        startRef.current = false;
-        setGrid(gliderGun)
-      }}>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          setGrid(gliderGun);
+        }}
+      >
         Gosper Glider Gun
+      </button>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          // setGrid(grid50);
+          setGrid(
+            buildGrid(row, column, val).map((rand) =>
+              rand.map((x) => Math.round(Math.random()))
+            )
+          );
+        }}
+      >
+        Random
       </button>
 
       <div
@@ -114,8 +133,7 @@ const Grid = () => {
                 border: '1px solid black',
                 background: grid[x][y] ? 'black' : 'white',
               }}
-            >
-            </div>
+            ></div>
           ))
         )}
       </div>
