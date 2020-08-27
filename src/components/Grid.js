@@ -61,7 +61,6 @@ const Grid = () => {
         onClick={() => {
           setStart(!start);
           startRef.current = true;
-          console.log(start);
           run();
         }}
       >
@@ -71,7 +70,6 @@ const Grid = () => {
         onClick={() => {
           setStart(false);
           startRef.current = false;
-          console.log(start);
           setGrid(grid50);
         }}
       >
@@ -99,7 +97,6 @@ const Grid = () => {
         onClick={() => {
           setStart(false);
           startRef.current = false;
-          // setGrid(grid50);
           setGrid(
             buildGrid(row, column, val).map((rand) =>
               rand.map((x) => Math.round(Math.random()))
@@ -120,7 +117,6 @@ const Grid = () => {
           rows.map((col, y) => (
             <div
               onClick={() => {
-                console.log(`$x: ${x}, y: ${y} Alive: ${grid[x][y]}`);
                 const gridClick = produce(grid, (newGrid) => {
                   newGrid[x][y] = newGrid[x][y] ? 0 : 1;
                 });
