@@ -1,14 +1,10 @@
 import React, { useState, useRef, useCallback } from 'react';
 import produce from 'immer';
+import { buildGrid, grid50, mirror, gliderGun } from '../presets/gridPresets';
 
 const row = 50;
 const column = 50;
 const val = 0;
-
-const buildGrid = (row, column, val) =>
-  new Array(row).fill(null).map((v) => new Array(column).fill(val));
-
-const grid50 = buildGrid(row, column, val);
 
 const neighborCells = [
   [0, 1],
@@ -56,7 +52,7 @@ const Grid = () => {
         }
       });
     });
-    setTimeout(run, 200);
+    setTimeout(run, 10);
   }, []);
 
   return (
@@ -65,7 +61,6 @@ const Grid = () => {
         onClick={() => {
           setStart(!start);
           startRef.current = true;
-          console.log(start);
           run();
         }}
       >
@@ -75,18 +70,41 @@ const Grid = () => {
         onClick={() => {
           setStart(false);
           startRef.current = false;
-          console.log(start);
-          setGrid(grid50)
+          setGrid(grid50);
         }}
       >
         Clear
       </button>
-      <button onClick={() => {
-        setStart(false);
-        startRef.current = false;
-        setGrid(grid50)
-      }}>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          setGrid(mirror);
+        }}
+      >
         Mirror
+      </button>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          setGrid(gliderGun);
+        }}
+      >
+        Gosper Glider Gun
+      </button>
+      <button
+        onClick={() => {
+          setStart(false);
+          startRef.current = false;
+          setGrid(
+            buildGrid(row, column, val).map((rand) =>
+              rand.map((x) => Math.round(Math.random()))
+            )
+          );
+        }}
+      >
+        Random
       </button>
 
       <div
@@ -99,7 +117,6 @@ const Grid = () => {
           rows.map((col, y) => (
             <div
               onClick={() => {
-                console.log(`$x: ${x}, y: ${y} Alive: ${grid[x][y]}`);
                 const gridClick = produce(grid, (newGrid) => {
                   newGrid[x][y] = newGrid[x][y] ? 0 : 1;
                 });
@@ -112,8 +129,7 @@ const Grid = () => {
                 border: '1px solid black',
                 background: grid[x][y] ? 'black' : 'white',
               }}
-            >
-            </div>
+            ></div>
           ))
         )}
       </div>
